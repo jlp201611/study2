@@ -13,35 +13,40 @@
 <%-- <script type="text/javascript" src="<%ctxPath%>/js/script.js"></script> --%>
 <title>2018.03.15</title>
 <style type="text/css">
+	
 	body, html {
 		width:100%; height:100%;
 		}
 	div:last-child {
 		clear:both;
 		}
+	#hearder {}
+	#left {width:20%; float:left;}	
+	#contents {width:80%; float:left}
+	#footer {clear:both;}
 </style>
 </head>
-<body style="width:100%; height:100%; ">
-	<div>
+<body>
+	<div id="header">
 	
 		<!--해더 start-->
 		<jsp:include page="include/top_ssam.jsp" flush="false"/>
 		<!--해더 end-->
 	</div>
 	
-	<div style="width:30%; float:left ">
+	<div id="left">
 		<!--좌측메뉴 start-->
 		<jsp:include page="include/left.jsp" flush="false"/>
 		<!--좌 end-->
 	</div>
 	
-	<div style="width:70%; float:left ">
+	<div id="contents">
 		<!--본문 start-->
 		HATENAKI 사이트
 		<!--본문 end-->
 	</div>
 	
-	<div>
+	<div id="footer">
 		<!--풋터 start-->
 		<jsp:include page="include/footer.jsp" flush="false"/>
 		<!--풋터 end-->
