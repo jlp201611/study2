@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--//resource/mapper/member.xml-->
+
+<!--namespace는 다른 매퍼와 구분을 해준다
+	 명칭은 아무렇게나 요즘은 인터페이스 이름을 사용하는 경우가 많다고함
+	 권장 명칭은 해당 dao의 풀네임을 써준다
+-->
+<mapper namespace="com.study.member.dao.IMemberDao"><!--다오에서 네임 스페이스를 통해서 member.xml로 찾아온다-->
+
+	<!-- id는 MemberDaoJDBC에서의 메서드이름(인터페이스에서 오버라이딩된)과 같아야 된다-->
+	<select id="getMemberList" resultType="member"><!--resultType에서 자동완성이 안되기 때문에 typealiases를 쓴다  -->
+		SELECT 			                                      
+		   	 mem_id		                                      
+		 		  , mem_name                                         
+		 		  , mem_pwd                                          
+		 	  	, mem_phone                                        
+		  		, mem_email                                        
+		  		, to_char(reg_date, 'YYYY/MM/DD') as reg_date      
+		  FROM tb_member  	                                      
+		 ORDER BY reg_date DESC                                 	
+	</select>
+<!--프리미티브 String, int등은 parameterType을 생략해도 알아서 #{}할때 데이터 타입에 맞게 pstmt.set해줌-->
+<!-- #{} -> pstmt.setString() , pstmt.setInt()  -->
+<!--resultTyped의 Member의 인스턴스 객체를 만들어서 select의 결과문을 칼럼명 == vo의맵버필드이름 이 같으면 저장을 해주고 리턴시켜줌 -->
+	<select id="getMember" parameterType="String" resultType="member">
+		SELECT 			                                      
+		   	 mem_id		                                      
+		 		  , mem_name                                         
+		 		  , mem_pwd                                          
+		 	  	, mem_phone                                        
+		  		, mem_email                                        
+		  		, to_char(reg_date, 'YYYY/MM/DD  HH24:MI') as reg_date      
+		  FROM tb_member  	                                      
+		 WHERE  mem_id = #{a001}
+	</select>
+<!--낙타식인경우 as memId라고 써줘야 한다-->
+
+<!-- parameterType를 객체로 받는 경우 #{}의 값은 맵버필드명을 정확하게 써야함 -> 그럼 마이바티스가 pstmt.setXxx를 해주고 int를 반환 시켜줌 -->
+	<update id="updateMember" parameterType="member">
+                    
+		UPDATE tb_member     
+		   SET mem_name  = #{mem_name}
+		     , mem_phone = #{mem_phone} 
+		     , mem_email = #{mem_email} 
+		 WHERE mem_id    = #{mem_id} 	
+	
+	
+	</update>
+
+	<insert id="insertMember" parameterType="member">
+		INSERT INTO tb_member ( 
+			     mem_id      
+			   , mem_name    
+			   , mem_pwd     
+			   , mem_phone   
+			   , mem_email   
+			   , reg_date    
+			)         
+		VALUES 	(         
+				 #{mem_id}		  
+				,#{mem_name}		  
+				,#{mem_pwd}		  
+				,#{mem_phone}		  
+				,#{mem_email}		  
+				,sysdate  
+			)		  
+	</insert>
+	
+	<delete id="delectMember" parameterType="member">
+		DELETE FROM tb_member                
+		 WHERE mem_id = #{mem_id} and mem_pwd = #{mem_pwd}    
+	</delete>
+	
+</mapper>
+

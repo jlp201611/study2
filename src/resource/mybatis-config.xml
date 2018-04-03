@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration><!--엘리어스를 썼는데 에러 뜨면 엘리어스 위치를 위에 놓으라는 오류일지도ㅋㅋ-->
+
+	<properties resource="resource/db.properties" /><!--내가 만든 프로포티 파일을 불러옴-->
+	<!--엘리어스는 프로포티스 밑에 써주는게 좋다 안글엄 오류뜸ㅋㅋㅋㅋ-->
+	<typeAliases>
+		<typeAlias alias="member" type="com.study.member.model.Member" />	
+		<typeAlias alias="board" type="com.study.board.model.Board" />	
+		<typeAlias alias="boardSearch" type="com.study.board.model.BoardSearch" />	
+	</typeAliases>
+  	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" /><!--마이바티스는 자동적으로 JDBC 드라이버 로더풀링을 해줌 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${db.driver}" />
+				<property name="url" value="${db.url}" />
+				<property name="username" value="${db.username}" />
+				<!--$는 EL표기법이 
+					아니라...프로포티에 있는 값을 불러올꺼냐임 -->
+				<property name="password" value="${db.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	
+	
+	<mappers>
+		<mapper resource="resource/mapper/member.xml" />
+		<mapper resource="resource/mapper/common.xml" />
+		<mapper resource="resource/mapper/board.xml" />
+	</mappers>
+</configuration>

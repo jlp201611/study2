@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--//resource/mapper/member.xml-->
+<mapper namespace="common">
+
+<!--다른구문에서 재사용하기 위한 SQL 조각-->
+	<!--페이징쿼리 전반부-->
+	<sql id="prePaging">
+		SELECT *                      
+		  FROM ( SELECT rownum rn, a.*
+		           FROM (            	
+	</sql>
+	
+	<!--페이징쿼리 후반부-->
+	<sql id="postPaging">
+	                ) a          
+	         ) b            
+	 WHERE rn between #{startRow} and #{endRow}
+	</sql><!--#{ -> pstmt가 ?에 바인딩 해주듯이 #{가 대신 그작업을 한다  -->
+
+	
+</mapper>

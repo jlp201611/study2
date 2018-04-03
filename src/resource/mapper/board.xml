@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--//resource/mapper/member.xml -->
+<mapper namespace="com.study.board.dao.IBoardDao">
+	<!-- id는 MemberDaoJDBC에서의 메서드이름(인터페이스에서 오버라이딩된)과 같아야 된다 -->
+	<!-- parameterType로 받을수 있는 패러미터는 하나만 가능하다.....나 딜리트 스트링 2개 받게 해놨는데ㅋㅋㅋㅋ -->
+
+	
+	<sql id="boardListWhereClause">
+	  <!--where 1=1 쓰고 where문 사용하지 않고 if 문 만으로 and를 붙여 사용해도 된다-->
+		<where><!--SQL의 WHERE 문장을 써줌-->
+		  <if test=" searchWord != null and searchWord !='' ">
+				<choose>
+					<when test="searchType == 'all'"><!--자바로 컴파일 되는 부분이라 searchType바로 사용-->
+						bo_title   LIKE '%' || #{searchWord} || '%'
+					OR	bo_writer  LIKE '%' || #{searchWord} || '%'
+					OR	bo_content LIKE '%' || #{searchWord} || '%'
+					</when>
+					<when test="searchType == 'bo_title'">
+						bo_tithe   LIKE '%' || #{searchWord} || '%'
+					</when>
+					<when test="searchType == 'bo_writer'">
+						bo_writer   LIKE '%' || #{searchWord} || '%'
+					</when>
+					<when test="searchType == 'bo_content'">
+						bo_content   LIKE '%' || #{searchWord} || '%'
+					</when>
+				</choose>
+		  </if>
+		</where> 		
+	</sql>
+
+
+	
+	<!--페이징-->
+	<select id="getBoardCount" parameterType="boardSearch" resultType="int"><!--int형은 resultType을 생략해도 되지만 불러올때 selectOne로 불러와야함-->
+		SELECT count(*) 
+		  FROM tb_board
+		  <include refid="boardListWhereClause" />
+
+	</select>
+	
+	<!--리스트-->
+	<select id="getBoardList" parameterType="boardSearch"
+		resultType="board"><!--resultType에서 자동완성이 안되기 때문에 typealiases를 쓴다 -->
+		<include refid="common.prePaging" />
+		SELECT
+				bo_no
+				,bo_title
+				,bo_writer
+				,bo_passwd
+				,bo_email
+				,bo_ip
+				,bo_read_cnt
+				,to_char(bo_reg_date, 'YYYY/MM/DD') as bo_reg_date
+				,to_char(bo_mod_date, 'YYYY/MM/DD') as bo_mod_date
+		FROM TB_BOARD
+		 <include refid="boardListWhereClause" />
+		ORDER BY bo_no DESC
+		<include refid="common.postPaging" />
+	</select>
+	
+	<!--상세보기-->
+	<select id="getBoard" resultType="board" parameterType="int"><!--parameterType는 하나니까 생략가능-->
+	 SELECT            
+	       bo_no       
+	      ,bo_title    
+	      ,bo_writer   
+	      ,bo_passwd   
+	      ,bo_email    
+	      ,bo_content  
+	      ,bo_ip       
+	      ,bo_read_cnt 
+	      ,bo_reg_date 
+	      ,bo_mod_date 
+	  FROM TB_BOARD    
+	 WHERE BO_NO = #{a001}   	
+	</select>
+	
+	<!--회원등록-->
+	<insert id="insertBoard" parameterType="board">
+	INSERT INTO TB_BOARD ( 
+			      bo_no      	   
+			    , bo_title         
+			    , bo_writer      
+			    , bo_passwd       
+			    , bo_email       
+			    , bo_content      
+			    , bo_ip           
+			    , bo_read_cnt     
+			    , bo_reg_date    
+			    , bo_mod_date     
+				)                 
+	VALUES (    seq_board.nextval	
+		  		 , #{bo_title}		 
+		  	  	 , #{bo_writer}	
+		  	    , #{bo_passwd}		 
+		       , #{bo_email}		 
+		       , #{bo_content}		  
+		       , #{bo_ip}	  
+		       , 0		  
+		       , sysdate  
+		       , sysdate  
+			)		       	
+	</insert>
+
+	<update id="updateBoard" parameterType="board" >
+		 update tb_board        
+		    set bo_title = #{bo_title}       
+		      , bo_writer = #{bo_writer}        
+		      , bo_content = #{bo_content}         
+		      , bo_mod_date = sysdate  
+		  where bo_no = #{bo_no}      	
+	</update>
+
+
+	
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <display-name>study</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error/error404.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error/error500.jsp</location>
+  </error-page>
+<!--예외코드별로..-->
+<!-- 우선순위 : 페이지 디렉토리 에러처리 > exception-type > error-code -->
+
+		<!-- <error-page>
+			<exception-type>java.lang.NullPointerException</exception-type>
+			<location>/error/exceptionType.jsp</location>
+		</error-page> -->
+
+<!--    < url 패턴 >
+			- 확장자 매핑 : *.확장자			(ex: ,*.nhn *.do)
+			- 경로 맵핑 : /폴더/*			(ex : /*)
+			- 완전 매핑 : /폴더/ 파일명.확장자
+			- 예외 사항 : /폴더/*.확장자		(이건 사용 불가능)
+-->
+<servlet>
+	<servlet-name>JDBCDriverLoader</servlet-name>
+	<servlet-class>com.study.servlet.DriverLoaderPool</servlet-class>
+	<load-on-startup>1</load-on-startup>
+</servlet>
+
+
+<servlet>
+	<servlet-name>mainController</servlet-name>
+	<servlet-class>com.study.servlet.TestController</servlet-class>
+	<init-param>
+		<param-name>configFile</param-name>
+		<param-value>/WEB-INF/classes/resource/study_uri.properties</param-value>
+	</init-param>
+	<load-on-startup>2</load-on-startup>
+</servlet>
+<!--load-on-startup가 2인 이유는 위에 1이 있어서ㅋㅋㅋ web.xml에서 하면 init()이 실행됨-->
+<!--사용자 요청시 페이지확장자가 .do이면 mainController 서블릿이 적용됨 -->
+<servlet-mapping>
+	<servlet-name>mainController</servlet-name>
+	<url-pattern>*.do</url-pattern>
+</servlet-mapping>
+ <!--스트러치 샘플이...do라서 확장자로 do를 하는 경우가 있었다는거...같은데....????캬캬캬 요즘은 do도 잘안쓰고 회사에서 정해놓은 확장자를 쓰는듯-->
+</web-app>
